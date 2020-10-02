@@ -1,0 +1,8 @@
+[24-Jul-2020 22:39:39 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:39 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
+[24-Jul-2020 22:39:44 Asia/Singapore] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: sessions) in /home/yuuki/public_html/dha/inventory/system/libraries/Session/Session.php on line 143
