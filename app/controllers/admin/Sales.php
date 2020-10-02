@@ -381,6 +381,10 @@ class Sales extends MY_Controller
         $this->form_validation->set_rules('sale_status', lang("sale_status"), 'required');
         $this->form_validation->set_rules('payment_status', lang("payment_status"), 'required');
 
+        if($this->input->post('paid_by') == 'Cheque'){
+            $this->form_validation->set_rules('cheque_no', lang("cheque_no"), 'required');
+        }
+
         if ($this->form_validation->run() == true) {
 
             $reference = $this->input->post('reference_no') ? $this->input->post('reference_no') : $this->site->getReference('so');
@@ -694,6 +698,10 @@ class Sales extends MY_Controller
             //$this->data['currencies'] = $this->sales_model->getAllCurrencies();
             $this->data['slnumber'] = ''; //$this->site->getReference('so');
             $this->data['payment_ref'] = ''; //$this->site->getReference('pay');
+
+            $this->load->admin_model('Cheque_model');
+            $this->data['cheques'] = $this->Cheque_model->getCheques(1, 0, 0);
+
             $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('sales'), 'page' => lang('sales')), array('link' => '#', 'page' => lang('add_sale')));
             $meta = array('page_title' => lang('add_sale'), 'bc' => $bc);
             $this->page_construct('sales/add', $meta, $this->data);
@@ -1792,6 +1800,11 @@ class Sales extends MY_Controller
         $this->form_validation->set_rules('amount-paid', lang("amount"), 'required');
         $this->form_validation->set_rules('paid_by', lang("paid_by"), 'required');
         $this->form_validation->set_rules('userfile', lang("attachment"), 'xss_clean');
+
+        if($this->input->post('paid_by') == 'Cheque'){
+            $this->form_validation->set_rules('cheque_no', lang("cheque_no"), 'required');
+        }
+
         if ($this->form_validation->run() == true) {
             if ($this->input->post('paid_by') == 'deposit') {
                 $sale = $this->sales_model->getInvoiceByID($this->input->post('sale_id'));
@@ -1867,6 +1880,9 @@ class Sales extends MY_Controller
             $this->data['payment_ref'] = ''; //$this->site->getReference('pay');
             $this->data['modal_js'] = $this->site->modal_js();
 
+            $this->load->admin_model('Cheque_model');
+            $this->data['cheques'] = $this->Cheque_model->getCheques(1, 0, 0);
+
             $this->load->view($this->theme . 'sales/add_payment', $this->data);
         }
     }
@@ -1887,6 +1903,10 @@ class Sales extends MY_Controller
         $this->form_validation->set_rules('amount-paid', lang("amount"), 'required');
         $this->form_validation->set_rules('paid_by', lang("paid_by"), 'required');
         $this->form_validation->set_rules('userfile', lang("attachment"), 'xss_clean');
+
+        if($this->input->post('paid_by') == 'Cheque'){
+            $this->form_validation->set_rules('cheque_no', lang("cheque_no"), 'required');
+        }
         if ($this->form_validation->run() == true) {
             if ($this->input->post('paid_by') == 'deposit') {
                 $sale = $this->sales_model->getInvoiceByID($this->input->post('sale_id'));
@@ -1952,6 +1972,11 @@ class Sales extends MY_Controller
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
             $this->data['payment'] = $payment;
             $this->data['modal_js'] = $this->site->modal_js();
+
+            $this->load->admin_model('Cheque_model');
+            $this->data['cheques'] = $this->Cheque_model->getCheques(1, 0, 0);
+            $this->data['cheque'] = $this->Cheque_model->getChequeById($this->data['payment']->cheque_no);
+
             $this->load->view($this->theme . 'sales/edit_payment', $this->data);
         }
     }

@@ -587,6 +587,8 @@ class Site extends CI_Model
         }
 
         if ($this->db->update('purchases', array('paid' => $paid, 'payment_status' => $payment_status), array('id' => $id))) {
+
+            
             return true;
         }
 

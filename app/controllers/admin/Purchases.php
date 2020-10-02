@@ -1349,6 +1349,10 @@ class Purchases extends MY_Controller
         $this->form_validation->set_rules('amount-paid', lang("amount"), 'required');
         $this->form_validation->set_rules('paid_by', lang("paid_by"), 'required');
         $this->form_validation->set_rules('userfile', lang("attachment"), 'xss_clean');
+
+        if($this->input->post('paid_by') == 'Cheque'){
+            $this->form_validation->set_rules('cheque_no', lang("cheque_no"), 'required');
+        }
         if ($this->form_validation->run() == true) {
             if ($this->Owner || $this->Admin) {
                 $date = $this->sma->fld(trim($this->input->post('date')));
@@ -1406,6 +1410,8 @@ class Purchases extends MY_Controller
             $this->data['payment_ref'] = ''; //$this->site->getReference('ppay');
             $this->data['modal_js'] = $this->site->modal_js();
 
+            $this->load->admin_model('Cheque_model');
+            $this->data['cheques'] = $this->Cheque_model->getCheques(0, 0, 0);
             $this->load->view($this->theme . 'purchases/add_payment', $this->data);
         }
     }
@@ -1422,6 +1428,11 @@ class Purchases extends MY_Controller
         $this->form_validation->set_rules('amount-paid', lang("amount"), 'required');
         $this->form_validation->set_rules('paid_by', lang("paid_by"), 'required');
         $this->form_validation->set_rules('userfile', lang("attachment"), 'xss_clean');
+
+        if($this->input->post('paid_by') == 'Cheque'){
+            $this->form_validation->set_rules('cheque_no', lang("cheque_no"), 'required');
+        }
+        
         if ($this->form_validation->run() == true) {
             if ($this->Owner || $this->Admin) {
                 $date = $this->sma->fld(trim($this->input->post('date')));
@@ -1474,8 +1485,15 @@ class Purchases extends MY_Controller
 
             $this->data['error'] = (validation_errors() ? validation_errors() : $this->session->flashdata('error'));
 
+
+
             $this->data['payment'] = $this->purchases_model->getPaymentByID($id);
+
             $this->data['modal_js'] = $this->site->modal_js();
+
+            $this->load->admin_model('Cheque_model');
+            $this->data['cheques'] = $this->Cheque_model->getCheques(0, 0, 0);
+            $this->data['cheque'] = $this->Cheque_model->getChequeById($this->data['payment']->cheque_no);
 
             $this->load->view($this->theme . 'purchases/edit_payment', $this->data);
         }

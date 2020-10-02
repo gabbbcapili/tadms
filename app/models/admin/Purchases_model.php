@@ -286,7 +286,13 @@ class Purchases_model extends CI_Model
         $purchase = $this->getPurchaseByID($id);
         $purchase_items = $this->site->getAllPurchaseItems($id);
         if ($this->db->delete('purchase_items', array('purchase_id' => $id)) && $this->db->delete('purchases', array('id' => $id))) {
-            $this->db->delete('payments', array('purchase_id' => $id));
+            $payments = $this->db->where('sale_id', $id)->get('purchase_id')->result();
+            foreach($payments as $payment){
+                if($payment->paid_by == 'Cheque'){
+                    $this->db->where('id', $payment->cheque_no)->update('cheque', ['used' => 0]);
+                }
+                $this->db->where('id', $payment->id)->delete('payments');
+            }
             if ($purchase->status == 'received' || $purchase->status == 'partial') {
                 foreach ($purchase_items as $oitem) {
                     $this->updateAVCO(array('product_id' => $oitem->product_id, 'warehouse_id' => $oitem->warehouse_id, 'quantity' => (0-$oitem->quantity), 'cost' => $oitem->real_unit_cost));
@@ -355,6 +361,9 @@ class Purchases_model extends CI_Model
                 $this->site->updateReference('ppay');
             }
             $this->site->syncPurchasePayments($data['purchase_id']);
+            if($data['paid_by'] == 'Cheque'){
+                $this->db->where('id', $data['cheque_no'])->update('cheque', ['used' => 1]);
+            }
             return true;
         }
         return false;
@@ -362,8 +371,17 @@ class Purchases_model extends CI_Model
 
     public function updatePayment($id, $data = array())
     {
+        $opay = $this->purchases_model->getPaymentByID($id);
+        if($data['paid_by'] != 'Cheque'){
+            $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
+            $data['cheque_no'] = null;
+        }else{
+            $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
+            $this->db->where('id', $data['cheque_no'])->update('cheque', ['used' => 1]);
+        }
         if ($this->db->update('payments', $data, array('id' => $id))) {
             $this->site->syncPurchasePayments($data['purchase_id']);
+
             return true;
         }
         return false;
@@ -374,6 +392,9 @@ class Purchases_model extends CI_Model
         $opay = $this->getPaymentByID($id);
         if ($this->db->delete('payments', array('id' => $id))) {
             $this->site->syncPurchasePayments($opay->purchase_id);
+            if($opay->paid_by == 'Cheque'){
+                $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
+            }
             return true;
         }
         return FALSE;

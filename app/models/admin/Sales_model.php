@@ -326,6 +326,9 @@ class Sales_model extends CI_Model
                     $this->db->update('gift_cards', array('balance' => $payment['gc_balance']), array('card_no' => $payment['cc_no']));
                     unset($payment['gc_balance']);
                     $this->db->insert('payments', $payment);
+                }else if($payment['paid_by'] == 'Cheque'){
+                    $this->db->where('id', $payment['cheque_no'])->update('cheque', ['used' => 1]);
+                    $this->db->insert('payments', $payment);
                 } else {
                     if ($payment['paid_by'] == 'deposit') {
                         $customer = $this->site->getCompanyByID($data['customer_id']);
@@ -453,7 +456,14 @@ class Sales_model extends CI_Model
         $this->db->delete('sales', array('id' => $id)) &&
         $this->db->delete('costing', array('sale_id' => $id))) {
             $this->db->delete('sales', array('sale_id' => $id));
-            $this->db->delete('payments', array('sale_id' => $id));
+
+            $payments = $this->db->where('sale_id', $id)->get('payments')->result();
+            foreach($payments as $payment){
+                if($payment->paid_by == 'Cheque'){
+                    $this->db->where('id', $payment->cheque_no)->update('cheque', ['used' => 0]);
+                }
+                $this->db->where('id', $payment->id)->delete('payments');
+            }
             $this->site->syncQuantity(NULL, NULL, $sale_items);
             return true;
         }
@@ -623,7 +633,10 @@ class Sales_model extends CI_Model
             } elseif ($customer_id && $data['paid_by'] == 'deposit') {
                 $customer = $this->site->getCompanyByID($customer_id);
                 $this->db->update('companies', array('deposit_amount' => ($customer->deposit_amount-$data['amount'])), array('id' => $customer_id));
+            }else if($data['paid_by'] == 'Cheque'){
+                $this->db->where('id', $data['cheque_no'])->update('cheque', ['used' => 1]);
             }
+
             return true;
         }
         return false;
@@ -632,6 +645,14 @@ class Sales_model extends CI_Model
     public function updatePayment($id, $data = array(), $customer_id = null)
     {
         $opay = $this->getPaymentByID($id);
+
+        if($data['paid_by'] != 'Cheque'){
+            $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
+            $data['cheque_no'] = null;
+        }else{
+            $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
+            $this->db->where('id', $data['cheque_no'])->update('cheque', ['used' => 1]);
+        }
         if ($this->db->update('payments', $data, array('id' => $id))) {
             $this->site->syncSalePayments($data['sale_id']);
             if ($opay->paid_by == 'gift_card') {
@@ -669,6 +690,8 @@ class Sales_model extends CI_Model
                 $sale = $this->getInvoiceByID($opay->sale_id);
                 $customer = $this->site->getCompanyByID($sale->customer_id);
                 $this->db->update('companies', array('deposit_amount' => ($customer->deposit_amount+$opay->amount)), array('id' => $customer->id));
+            }else if($opay->paid_by == 'Cheque'){
+                $this->db->where('id', $opay->cheque_no)->update('cheque', ['used' => 0]);
             }
             return true;
         }

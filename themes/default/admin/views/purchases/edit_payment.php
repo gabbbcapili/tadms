@@ -111,8 +111,21 @@
                         </div>
                         <div class="pcheque_1" style="display:none;">
                             <div class="form-group"><?= lang("cheque_no", "cheque_no_1"); ?>
-                                <input name="cheque_no" value="<?= $payment->cheque_no; ?>" type="text" id="cheque_no_1"
-                                       class="form-control cheque_no"/>
+                                <!-- <input name="cheque_no" value="<?= $payment->cheque_no; ?>" type="text" id="cheque_no_1"
+                                       class="form-control cheque_no"/> -->
+
+                                       <select class="form-control input-tip select" style="width:100%;" id="cheque_no" name="cheque_no" data-placeholder="Select Cheque">
+
+                                        <?php if($cheque != null){ ?>
+                                        <option selected value="<?= $cheque->id ?>"> <?= $cheque->cheque_code . ' - ' . $cheque->bank_name . ' ' . $cheque->account_name . ' [ ' . $cheque->amount . ' ]'; ?></option>
+                                        <?php }else{ ?>
+                                            <option selected disabled value=""> Select Cheque</option>
+                                        <?php } ?> 
+                                        <?php 
+                                        foreach($cheques as $c): ?>
+                                            <option value="<?= $c->id ?>" amount="<?= $c->amount ?>"><?= $c->cheque_code . ' - ' . $c->bank_name . ' ' . $c->account_name . ' [ ' . $c->amount . ' ]'; ?></option>
+                                        <?php endforeach ?>
+                                    </select>
                             </div>
                         </div>
                     </div>
@@ -212,5 +225,13 @@
             $('#pcc_type_1').select2("val", CardType);
         });
         $('#paid_by_1').select2("val", '<?=$payment->paid_by?>');
+
+        $('#cheque_no').select2({minimumInputLength: 0});
+
+        $(document).on('change', '#cheque_no', function(){
+             var element = $(this).find('option:selected'); 
+             var amount = element.attr("amount"); 
+             $('#amount_1').val(amount);
+        });
     });
 </script>

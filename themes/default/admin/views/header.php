@@ -533,6 +533,29 @@
                                 </ul>
                             </li>
 
+
+                            <li class="mm_cheque">
+                                <a class="dropmenu" href="#">
+                                    <i class="fa fa-money"></i>
+                                    <span class="text"> <?= lang('cheque'); ?> </span>
+                                    <span class="chevron closed"></span>
+                                </a>
+                                <ul>
+                                    <li id="cheque_index">
+                                        <a class="submenu" href="<?= admin_url('cheque'); ?>">
+                                            <i class="fa fa-random"></i><span class="text"> <?= lang('List Cheque'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="cheque_add">
+                                        <a class="submenu" href="<?= admin_url('cheque/add'); ?>">
+                                            <i class="fa fa-plus-circle"></i><span class="text"> <?= lang('Add Cheque'); ?></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+
+
                             <li class="mm_auth mm_customers mm_suppliers mm_billers">
                                 <a class="dropmenu" href="#">
                                 <i class="fa fa-users"></i>

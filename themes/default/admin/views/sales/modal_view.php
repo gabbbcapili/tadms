@@ -1,4 +1,10 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<style type="text/css">
+@media print {
+  @page { margin: 0; }
+  body { margin: 1.6cm; }
+}
+</style>
 <div class="modal-dialog modal-lg no-modal-header">
     <div class="modal-content">
         <div class="modal-body">
@@ -9,14 +15,14 @@
                 <i class="fa fa-print"></i> <?= lang('print'); ?>
             </button>
             <?php if ($logo) { ?>
-                <div class="text-center" style="margin-bottom:20px;">
+                <div class="text-center" style="margin-bottom:10px;">
                     <img src="<?= base_url() . 'assets/uploads/logos/' . $biller->logo; ?>"
                          alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>">
                 </div>
             <?php } ?>
             <div class="well well-sm">
                 <div class="row bold">
-                    <div class="col-xs-5">
+                    <div class="col-xs-7">
                     <p class="bold">
                         <?= lang("date"); ?>: <?= $this->sma->hrld($inv->date); ?><br>
                         <?= lang("ref"); ?>: <?= $inv->reference_no; ?><br>
@@ -34,31 +40,20 @@
                             echo '<br>'.lang('due_date').': '.$this->sma->hrsd($inv->due_date);
                         } ?>
                     </p>
-                    </div>
-                    <div class="col-xs-7 text-right order_barcodes">
-                        <img src="<?= admin_url('misc/barcode/'.$this->sma->base64url_encode($inv->reference_no).'/code128/74/0/1'); ?>" alt="<?= $inv->reference_no; ?>" class="bcimg" />
+       <!--              <div class="text-left order_barcodes">
+                                        <img src="<?= admin_url('misc/barcode/'.$this->sma->base64url_encode($inv->reference_no).'/code128/74/0/1'); ?>" alt="<?= $inv->reference_no; ?>" class="bcimg" />
                         <?= $this->sma->qrcode('link', urlencode(admin_url('sales/view/' . $inv->id)), 2); ?>
+                    </div> -->
                     </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-            </div>
+                    <div class="col-xs-5">
 
-            <div class="row" style="margin-bottom:15px;">
 
-                <?php if ($Settings->invoice_view == 1) { ?>
-                    <div class="col-xs-12 text-center">
-                        <h1><?= lang('tax_invoice'); ?></h1>
-                    </div>
-                <?php } ?>
-
-                <div class="col-xs-6">
-                    <?php echo $this->lang->line("to"); ?>:<br/>
+                         <!-- <?php echo $this->lang->line("to"); ?>:<br/> -->
                     <h2 style="margin-top:10px;"><?= $customer->company && $customer->company != '-' ? $customer->company : $customer->name; ?></h2>
                     <?= $customer->company && $customer->company != '-' ? "" : "Attn: " . $customer->name ?>
 
                     <?php
-                    echo $customer->address . "<br>" . $customer->city . " " . $customer->postal_code . " " . $customer->state . "<br>" . $customer->country;
+                    echo $customer->address . " " . $csutomer->city . " " . $customer->postal_code . " " . $customer->state . " " . $customer->country;
 
                     echo "<p>";
 
@@ -88,10 +83,21 @@
                     }
 
                     echo "</p>";
-                    echo lang("tel") . ": " . $customer->phone . "<br>" . lang("email") . ": " . $customer->email;
+                    // echo lang("tel") . ": " . $customer->phone . "<br>" . lang("email") . ": " . $customer->email;
                     ?>
+                    </div>
+    
                 </div>
+            </div>
 
+            <div class="row" style="margin-bottom:15px;">
+
+                <?php if ($Settings->invoice_view == 1) { ?>
+                    <div class="col-xs-12 text-center">
+                        <h1><?= lang('tax_invoice'); ?></h1>
+                    </div>
+                <?php } ?>
+<!-- 
                 <div class="col-xs-6">
                     <?php echo $this->lang->line("from"); ?>:
                     <h2 style="margin-top:10px;"><?= $biller->company != '-' ? $biller->company : $biller->name; ?></h2>
@@ -130,12 +136,12 @@
                     echo "</p>";
                     echo lang("tel") . ": " . $biller->phone . "<br>" . lang("email") . ": " . $biller->email;
                     ?>
-                </div>
+                </div> -->
 
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover table-striped print-table order-table">
+                <table class="table table-bordered table-hover print-table order-table">
 
                     <thead>
 
@@ -323,9 +329,29 @@
             </div>
 
             <?= $Settings->invoice_view > 0 ? $this->gst->summary($rows, $return_rows, ($return_sale ? $inv->product_tax+$return_sale->product_tax : $inv->product_tax)) : ''; ?>
-
+                <br>
             <div class="row">
-                <div class="col-xs-12">
+
+                <div class="col-xs-6">
+                 
+                            <div class="well well-sm">
+                                <div> <b>Note:</b> Sales invoice will be issued immediately upon completion of delivery <b>Please make check payable to Tiger and Dragon Marketing</b></div>
+                            </div>
+                
+                </div>
+
+                <div class="col-xs-6 pull-right">
+                    <div class="well well-sm">
+                        <p>
+                            Received the above goods in good order and condition.
+                        </p>
+                        <p>
+                            By:
+                            ____________________________________
+                        </p>
+                    </div>
+                </div>
+        <!--         <div class="col-xs-12">
                     <?php
                         if ($inv->note || $inv->note != "") { ?>
                             <div class="well well-sm">
@@ -340,8 +366,8 @@
                                 <div><?= $this->sma->decode_html($inv->staff_note); ?></div>
                             </div>
                         <?php } ?>
-                </div>
-
+                </div> -->
+<!-- 
                 <?php if ($customer->award_points != 0 && $Settings->each_spent > 0) { ?>
                 <div class="col-xs-5 pull-left">
                     <div class="well well-sm">
@@ -352,8 +378,8 @@
                     </div>
                 </div>
                 <?php } ?>
-
-                <div class="col-xs-5 pull-right">
+ -->
+        <!--         <div class="col-xs-5 pull-right">
                     <div class="well well-sm">
                         <p>
                             <?= lang("created_by"); ?>: <?= $inv->created_by ? $created_by->first_name . ' ' . $created_by->last_name : $customer->name; ?> <br>
@@ -366,7 +392,7 @@
                         </p>
                         <?php } ?>
                     </div>
-                </div>
+                </div> -->
             </div>
             <?php if (!$Supplier || !$Customer) { ?>
                 <div class="buttons">
