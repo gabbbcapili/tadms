@@ -37,7 +37,9 @@
                         <?= lang("sale_status"); ?>: <?= lang($inv->sale_status); ?><br>
                         <?= lang("payment_status"); ?>: <?= lang($inv->payment_status); ?>
                         <?php if ($inv->payment_status != 'paid') {
-                            echo '<br>'.lang('due_date').': '.$this->sma->hrsd($inv->due_date);
+                            if($inv->due_date != null){
+                                echo '<br>'.lang('due_date').': '.$this->sma->hrsd($inv->due_date);
+                            }
                             echo  $inv->payment_term != 0 ? '<br> Terms: ' .  $inv->payment_term . ' Days' : '';
                         } ?>
                     </p>
