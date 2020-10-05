@@ -24,7 +24,7 @@
                 <div class="row bold">
                     <div class="col-xs-7">
                     <p class="bold">
-                        <?= lang("date"); ?>: <?= $this->sma->hrld($inv->date); ?><br>
+                        <?= lang("date"); ?>: <?= $this->sma->hrsd($inv->date); ?><br>
                         <?= lang("ref"); ?>: <?= $inv->reference_no; ?><br>
                         <?php if (!empty($inv->return_sale_ref)) {
                             echo lang("return_ref").': '.$inv->return_sale_ref;
@@ -35,7 +35,7 @@
                             }
                         } ?>
                         <?= lang("sale_status"); ?>: <?= lang($inv->sale_status); ?><br>
-                        <?= lang("payment_status"); ?>: <?= lang($inv->payment_status); ?>
+                        <?= lang("payment_status"); ?>: <?= lang($inv->payment_status); ?> <?= $inv->payment_term != 0 ? $inv->payment_term . ' Days' : '' ?>
                         <?php if ($inv->payment_status != 'paid') {
                             echo '<br>'.lang('due_date').': '.$this->sma->hrsd($inv->due_date);
                         } ?>
@@ -309,20 +309,20 @@
                         </td>
                         <td style="text-align:right; padding-right:10px; font-weight:bold;"><?= $this->sma->formatMoney($return_sale ? ($inv->grand_total+$return_sale->grand_total) : $inv->grand_total); ?></td>
                     </tr>
-                    <tr>
+ <!--                    <tr>
                         <td colspan="<?= $col; ?>"
                             style="text-align:right; font-weight:bold;"><?= lang("paid"); ?>
                             (<?= $default_currency->code; ?>)
                         </td>
                         <td style="text-align:right; font-weight:bold;"><?= $this->sma->formatMoney($return_sale ? ($inv->paid+$return_sale->paid) : $inv->paid); ?></td>
-                    </tr>
-                    <tr>
+                    </tr> -->
+    <!--                 <tr>
                         <td colspan="<?= $col; ?>"
                             style="text-align:right; font-weight:bold;"><?= lang("balance"); ?>
                             (<?= $default_currency->code; ?>)
                         </td>
                         <td style="text-align:right; font-weight:bold;"><?= $this->sma->formatMoney(($return_sale ? ($inv->grand_total+$return_sale->grand_total) : $inv->grand_total) - ($return_sale ? ($inv->paid+$return_sale->paid) : $inv->paid)); ?></td>
-                    </tr>
+                    </tr> -->
 
                     </tfoot>
                 </table>
@@ -351,7 +351,8 @@
                         </p>
                     </div>
                 </div>
-        <!--         <div class="col-xs-12">
+
+                 <div class="col-xs-12">
                     <?php
                         if ($inv->note || $inv->note != "") { ?>
                             <div class="well well-sm">
@@ -366,7 +367,8 @@
                                 <div><?= $this->sma->decode_html($inv->staff_note); ?></div>
                             </div>
                         <?php } ?>
-                </div> -->
+                </div>
+
 <!-- 
                 <?php if ($customer->award_points != 0 && $Settings->each_spent > 0) { ?>
                 <div class="col-xs-5 pull-left">
