@@ -53,7 +53,7 @@ class Cheque extends MY_Controller
         $this->load->library('datatables');
 
         $this->datatables
-            ->select("{$this->db->dbprefix('cheque')}.id as id, if(sma_cheque.type=1, 'Customer', 'Supplier'), DATE_FORMAT({$this->db->dbprefix('cheque')}.transaction_date, '%Y-%m-%d %T') as transaction_date, DATE_FORMAT({$this->db->dbprefix('cheque')}.deposit_date, '%Y-%m-%d %T') as deposite_date, cheque_code, cheque_number, amount, bank_name, if(sma_cheque.is_deposited=1, 'Yes', 'No'), account_name")
+            ->select("{$this->db->dbprefix('cheque')}.id as id, if(sma_cheque.type=1, 'Customer', 'Supplier'),transaction_date,  deposit_date, cheque_code, cheque_number, amount, bank_name, if(sma_cheque.is_deposited=1, 'Yes', 'No'), account_name")
             ->from('cheque');
 
         $this->datatables->add_column("Actions", "<div class=\"text-center\"><a href='" . admin_url('cheque/edit/$1') . "' class='tip' title='" . lang("Edit Cheque") . "'><i class=\"fa fa-edit\"></i></a> <a href='#' class='tip po' title='<b>" . lang("Delete Cheque") . "</b>' data-content=\"<p>" . lang('r_u_sure') . "</p><a class='btn btn-danger po-delete' href='" . admin_url('cheque/delete/$1') . "'>" . lang('i_m_sure') . "</a> <button class='btn po-close'>" . lang('no') . "</button>\"  rel='popover'><i class=\"fa fa-trash-o\"></i></a></div>", "id");
@@ -86,8 +86,8 @@ class Cheque extends MY_Controller
         if ($this->form_validation->run() == true) {
             $data = [
             	'type' =>  $this->input->post('type'),
-            	'deposit_date' => $this->sma->format_date($this->input->post('deposit_date')),
-            	'transaction_date' =>  $this->sma->format_date($this->input->post('transaction_date')),
+            	'deposit_date' => $this->input->post('deposit_date'),
+            	'transaction_date' =>  $this->input->post('transaction_date'),
             	'amount' =>  $this->input->post('amount'),
             	'cheque_code' =>  $this->input->post('cheque_code'),
             	'cheque_number' => $this->input->post('cheque_number'),
@@ -99,6 +99,7 @@ class Cheque extends MY_Controller
             	'created_by' =>  $this->session->userdata('user_id'),
             	'created_at' =>  date('Y-m-d H:i:s'),
             ];
+
         }
         if ($this->form_validation->run() == true && $this->Cheque_model->addCheque($data)) {
             $this->session->set_flashdata('message', lang("Cheque Added"));

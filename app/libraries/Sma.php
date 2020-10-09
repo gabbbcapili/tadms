@@ -171,7 +171,7 @@ class Sma
         }
     }
 
-    public function format_date($date, $format = 'Y-m-d H:i:s'){
+    public function format_date($date, $format = 'Y-m-d'){
         return date_format(date_create($date), $format);
     }
 
