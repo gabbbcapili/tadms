@@ -86,8 +86,8 @@ class Cheque extends MY_Controller
         if ($this->form_validation->run() == true) {
             $data = [
             	'type' =>  $this->input->post('type'),
-            	'deposit_date' =>  $this->input->post('deposit_date'),
-            	'transaction_date' =>  $this->input->post('transaction_date'),
+            	'deposit_date' => $this->sma->format_date($this->input->post('deposit_date')),
+            	'transaction_date' =>  $this->sma->format_date($this->input->post('transaction_date')),
             	'amount' =>  $this->input->post('amount'),
             	'cheque_code' =>  $this->input->post('cheque_code'),
             	'cheque_number' => $this->input->post('cheque_number'),

@@ -171,6 +171,10 @@ class Sma
         }
     }
 
+    public function format_date($date, $format = 'Y-m-d H:i:s'){
+        return date_format(date_create($date), $format);
+    }
+
     public function hrld($ldate)
     {
         if ($ldate) {
