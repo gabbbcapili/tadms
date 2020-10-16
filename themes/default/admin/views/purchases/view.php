@@ -391,17 +391,21 @@
                                 <th><?= lang('date') ?></th>
                                 <th><?= lang('payment_reference') ?></th>
                                 <th><?= lang('paid_by') ?></th>
+                                <th>Cheque Code</th>
                                 <th><?= lang('amount') ?></th>
                                 <th><?= lang('created_by') ?></th>
                                 <th><?= lang('type') ?></th>
                             </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($payments as $payment) { ?>
+                            <?php foreach ($payments as $payment) {
+                            $cheque = $this->purchases_model->getChequePayment($payment->cheque_no);
+                             ?>
                                 <tr>
                                     <td><?= $this->sma->hrld($payment->date) ?></td>
                                     <td><?= $payment->reference_no; ?></td>
                                     <td><?= $payment->paid_by; ?></td>
+                                    <td><?= $cheque != null ? $cheque->cheque_code : '' ?></td>
                                     <td><?= $payment->amount; ?></td>
                                     <td><?= $payment->first_name . ' ' . $payment->last_name; ?></td>
                                     <td><?= $payment->type; ?></td>

@@ -582,7 +582,9 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <?php foreach ($payments as $payment) { ?>
+                                    <?php foreach ($payments as $payment) { 
+                                        $cheque = $this->sales_model->getChequePayment($payment->cheque_no);
+                                        ?>
                                         <tr <?= $payment->type == 'returned' ? 'class="warning"' : ''; ?>>
                                             <td><?= $this->sma->hrld($payment->date) ?></td>
                                             <td><?= $payment->reference_no; ?></td>
@@ -590,7 +592,7 @@
                                                 if ($payment->paid_by == 'gift_card' || $payment->paid_by == 'CC') {
                                                     echo ' (' . $payment->cc_no . ')';
                                                 } elseif ($payment->paid_by == 'Cheque') {
-                                                    echo ' (' . $payment->cheque_no . ')';
+                                                    echo $cheque != null ? '(' . $cheque->cheque_code . ')' : '';
                                                 }
                                                 ?></td>
                                             <td><?= $this->sma->formatMoney($payment->amount); ?></td>

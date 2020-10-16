@@ -340,9 +340,18 @@ class Purchases_model extends CI_Model
         return FALSE;
     }
 
+    public function getChequePayment($cheque_id){
+        $q = $this->db->get_where('cheque', array('id' => $cheque_id));
+        if ($q->num_rows() > 0) {
+            return $q->row();
+        }else{
+            return null;
+        }
+    }
+
     public function getPaymentsForPurchase($purchase_id)
     {
-        $this->db->select('payments.date, payments.paid_by, payments.amount, payments.reference_no, users.first_name, users.last_name, type')
+        $this->db->select('payments.date, payments.paid_by, payments.amount, payments.reference_no, users.first_name, users.last_name, type, payments.cheque_no')
             ->join('users', 'users.id=payments.created_by', 'left');
         $q = $this->db->get_where('payments', array('purchase_id' => $purchase_id));
         if ($q->num_rows() > 0) {

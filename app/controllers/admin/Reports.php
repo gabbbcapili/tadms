@@ -1130,7 +1130,7 @@ class Reports extends MY_Controller
 
         } else {
 
-            $si = "( SELECT sale_id, product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->dbprefix('sale_items')}.product_name, '__', {$this->db->dbprefix('sale_items')}.quantity) SEPARATOR '___') as item_nane from {$this->db->dbprefix('sale_items')} ";
+            $si = "( SELECT sale_id, product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->dbprefix('sale_items')}.product_name, '__', {$this->db->dbprefix('sale_items')}.quantity , '__', {$this->db->dbprefix('sale_items')}.product_unit_code ,'__', {$this->db->dbprefix('sale_items')}.unit_price) SEPARATOR '___') as item_nane from {$this->db->dbprefix('sale_items')} ";
             if ($product || $serial) { $si .= " WHERE "; }
             if ($product) {
                 $si .= " {$this->db->dbprefix('sale_items')}.product_id = {$product} ";
@@ -1575,7 +1575,13 @@ class Reports extends MY_Controller
 
         } else {
 
-            $pi = "( SELECT purchase_id, product_id, (GROUP_CONCAT(CONCAT({$this->db->dbprefix('purchase_items')}.product_name, '__', {$this->db->dbprefix('purchase_items')}.quantity) SEPARATOR '___')) as item_nane from {$this->db->dbprefix('purchase_items')} ";
+$si = "( SELECT sale_id, product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->dbprefix('sale_items')}.product_name, '__', {$this->db->dbprefix('sale_items')}.quantity , '__', {$this->db->dbprefix('sale_items')}.product_unit_code ,'__', {$this->db->dbprefix('sale_items')}.unit_price) SEPARATOR '___') as item_nane from {$this->db->dbprefix('sale_items')} ";
+
+
+
+
+
+            $pi = "( SELECT purchase_id, product_id, GROUP_CONCAT(CONCAT({$this->db->dbprefix('purchase_items')}.product_name, '__', {$this->db->dbprefix('purchase_items')}.quantity , '__', {$this->db->dbprefix('purchase_items')}.product_unit_code ,'__', {$this->db->dbprefix('purchase_items')}.net_unit_cost) SEPARATOR '___') as item_nane from {$this->db->dbprefix('purchase_items')} ";
             if ($product) {
                 $pi .= " WHERE {$this->db->dbprefix('purchase_items')}.product_id = {$product} ";
             }
@@ -1950,6 +1956,14 @@ class Reports extends MY_Controller
     {
         $this->sma->checkPermissions('suppliers', TRUE);
 
+        $start_date = $this->input->get('start_date') ? $this->input->get('start_date') : NULL;
+        $end_date = $this->input->get('end_date') ? $this->input->get('end_date') : NULL;
+
+        if ($start_date) {
+            $start_date = $this->sma->fld($start_date);
+            $end_date = $this->sma->fld($end_date);
+        }
+
         if ($pdf || $xls) {
 
             $this->db
@@ -2014,17 +2028,29 @@ class Reports extends MY_Controller
 
         } else {
 
-            $p = "( SELECT supplier_id, count(" . $this->db->dbprefix('purchases') . ".id) as total, COALESCE(sum(grand_total), 0) as total_amount, COALESCE(sum(paid), 0) as paid, ( COALESCE(sum(grand_total), 0) - COALESCE(sum(paid), 0)) as balance from {$this->db->dbprefix('purchases')} GROUP BY {$this->db->dbprefix('purchases')}.supplier_id ) FP";
+            $p = "( SELECT supplier_id, count(" . $this->db->dbprefix('purchases') . ".id) as total, COALESCE(sum(grand_total), 0) as total_amount, COALESCE(sum(paid), 0) as paid, ( COALESCE(sum(grand_total), 0) - COALESCE(sum(paid), 0)) as balance from {$this->db->dbprefix('purchases')} GROUP BY {$this->db->dbprefix('purchases')}.supplier_id  ";
+             if ($start_date) {
+               $p .=  "{$this->db->dbprefix('purchases')}.date BETWEEN " . $start_date . " and " . $end_date;
+            }
+
+            $p .= " FP)";
 
             $this->load->library('datatables');
             $this->datatables
-                ->select($this->db->dbprefix('companies') . ".id as id, company, name, phone, email, FP.total, FP.total_amount, FP.paid, FP.balance", FALSE)
-                ->from("companies")
-                ->join($p, 'FP.supplier_id=companies.id')
+                ->select("companies.id as id, companies.company, companies.name, companies.phone, companies.email, count(sma_purchases.id) as total, COALESCE(sum(sma_purchases.grand_total), 0) as total_amount, COALESCE(sum(sma_purchases.paid), 0) as paid,  ( COALESCE(sum(sma_purchases.grand_total), 0) - COALESCE(sum(sma_purchases.paid), 0)) as balance", FALSE)
+                ->from("purchases")
+                ->join('companies', 'purchases.supplier_id=companies.id')
                 ->where('companies.group_name', 'supplier')
-                ->group_by('companies.id')
+                ->group_by('purchases.supplier_id')
                 ->add_column("Actions", "<div class='text-center'><a class=\"tip\" title='" . lang("view_report") . "' href='" . admin_url('reports/supplier_report/$1') . "'><span class='label label-primary'>" . lang("view_report") . "</span></a></div>", "id")
                 ->unset_column('id');
+
+            if ($start_date) {
+                $this->datatables->where($this->db->dbprefix('purchases').'.date BETWEEN "' . $start_date . '" and "' . $end_date . '"');
+            }
+
+
+           
             echo $this->datatables->generate();
 
         }
@@ -2038,7 +2064,6 @@ class Reports extends MY_Controller
             $this->session->set_flashdata('error', lang("no_supplier_selected"));
             admin_redirect('reports/suppliers');
         }
-
         $this->data['purchases'] = $this->reports_model->getPurchasesTotals($user_id);
         $this->data['total_purchases'] = $this->reports_model->getSupplierPurchases($user_id);
         $this->data['users'] = $this->reports_model->getStaff();

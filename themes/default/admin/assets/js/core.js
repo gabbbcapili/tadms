@@ -870,6 +870,20 @@ function pqFormat(x) {
         return '';
     }
 }
+
+function pqqFormat(x) {
+    if (x != null) {
+        var d = '', pqc = x.split("___");
+        for (index = 0; index < pqc.length; ++index) {
+            var pq = pqc[index];
+            var v = pq.split("__");
+            d += v[0]+'<br>('+formatQuantity2(v[1]) + v[2]+')'+' (₱'+formatQuantity2(v[3])+')<br>';
+        }
+        return d;
+    } else {
+        return '';
+    }
+}
 function checkbox(x) {
     return '<div class="text-center"><input class="checkbox multi-select" type="checkbox" name="val[]" value="' + x + '" /></div>';
 }

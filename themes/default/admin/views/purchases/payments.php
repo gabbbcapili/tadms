@@ -19,17 +19,21 @@
                         <th style="width:30%;"><?= $this->lang->line("reference_no"); ?></th>
                         <th style="width:15%;"><?= $this->lang->line("amount"); ?></th>
                         <th style="width:15%;"><?= $this->lang->line("paid_by"); ?></th>
+                        <th style="width:15%;">Cheque Code</th>
                         <th style="width:10%;"><?= $this->lang->line("actions"); ?></th>
                     </tr>
                     </thead>
                     <tbody>
                     <?php if (!empty($payments)) {
-                        foreach ($payments as $payment) { ?>
+                        foreach ($payments as $payment) {
+                            $cheque = $this->purchases_model->getChequePayment($payment->cheque_no);
+                         ?>
                             <tr class="row<?= $payment->id ?>">
                                 <td><?= $this->sma->hrld($payment->date); ?></td>
                                 <td><?= $payment->reference_no; ?></td>
                                 <td><?= $this->sma->formatMoney($payment->amount) . ' ' . (($payment->attachment) ? '<a href="' . admin_url('welcome/download/' . $payment->attachment) . '"><i class="fa fa-chain"></i></a>' : ''); ?></td>
                                 <td><?= lang($payment->paid_by); ?></td>
+                                <td><?= $cheque != null ? $cheque->cheque_code : '' ?></td>
                                 <td>
                                     <div class="text-center">
                                         <a href="<?= admin_url('purchases/payment_note/' . $payment->id) ?>"

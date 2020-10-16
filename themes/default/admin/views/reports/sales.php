@@ -57,7 +57,7 @@ if ($this->input->post('end_date')) {
             },
             "aoColumns": [{"mRender": fld}, null, null, null, {
                 "bSearchable": false,
-                "mRender": pqFormat
+            "mRender": pqqFormat
             }, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": currencyFormat}, {"mRender": row_status}],
             "fnFooterCallback": function (nRow, aaData, iStart, iEnd, aiDisplay) {
                 var gtotal = 0, paid = 0, balance = 0;
@@ -275,7 +275,7 @@ if ($this->input->post('end_date')) {
                             <th><?= lang("reference_no"); ?></th>
                             <th><?= lang("biller"); ?></th>
                             <th><?= lang("customer"); ?></th>
-                            <th><?= lang("product_qty"); ?></th>
+                            <th>Product (Qty) (Unit Price)</th>
                             <th><?= lang("grand_total"); ?></th>
                             <th><?= lang("paid"); ?></th>
                             <th><?= lang("balance"); ?></th>
