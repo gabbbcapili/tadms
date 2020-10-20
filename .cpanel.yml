@@ -1,5 +1,5 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/kcape3ammrnq/public_html/tadms
+ - export DEPLOYPATH=/home/aquiware/public_html/tadms
  - /bin/cp -r * $DEPLOYPATH
