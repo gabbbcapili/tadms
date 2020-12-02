@@ -184,6 +184,15 @@ class Sma
         }
     }
 
+    public function dateTime($ldate, $format = 'Y-m-d H:i:s')
+    {
+        if ($ldate) {
+            return date($format, strtotime($ldate));
+        } else {
+            return '0000-00-00 00:00:00';
+        }
+    }
+
     public function fsd($inv_date)
     {
         if ($inv_date) {

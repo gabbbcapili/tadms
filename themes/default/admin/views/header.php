@@ -554,6 +554,21 @@
                                 </ul>
                             </li>
 
+                            <li class="mm_utilities">
+                                <a class="dropmenu" href="#">
+                                    <i class="fa fa-wrench"></i>
+                                    <span class="text"> Utilities</span>
+                                    <span class="chevron closed"></span>
+                                </a>
+                                <ul>
+                                    <li id="utilities_index">
+                                        <a class="submenu" href="<?= admin_url('utilities/product'); ?>">
+                                            <i class="fa fa-list"></i><span class="text"> <?= lang('Product Utilities'); ?></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
 
 
                             <li class="mm_auth mm_customers mm_suppliers mm_billers">
@@ -770,6 +785,16 @@
                                             <i class="fa fa-barcode"></i><span class="text"> <?= lang('products_report'); ?></span>
                                         </a>
                                     </li>
+                                    <li id="reports_products_profit">
+                                        <a href="<?= admin_url('reports/profit_based') ?>">
+                                            <i class="fa fa-barcode"></i><span class="text"> <?= lang('Product Profit Report'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="reports_products_price_list">
+                                        <a href="<?= admin_url('reports/price_list') ?>">
+                                            <i class="fa fa-barcode"></i><span class="text"> <?= lang('Product Price List Report'); ?></span>
+                                        </a>
+                                    </li>
                                     <li id="reports_adjustments">
                                         <a href="<?= admin_url('reports/adjustments') ?>">
                                             <i class="fa fa-filter"></i><span class="text"> <?= lang('adjustments_report'); ?></span>
@@ -843,6 +868,16 @@
                                     <li id="reports_supplier_report">
                                         <a href="<?= admin_url('reports/suppliers') ?>">
                                             <i class="fa fa-users"></i><span class="text"> <?= lang('suppliers_report'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="reports_supplier_report">
+                                        <a href="<?= admin_url('reports/suppliers_transactions') ?>">
+                                            <i class="fa fa-users"></i><span class="text"> <?= lang('Supplier Transactions'); ?></span>
+                                        </a>
+                                    </li>
+                                    <li id="reports_cheque_report">
+                                        <a href="<?= admin_url('reports/cheque') ?>">
+                                            <i class="fa fa-money"></i><span class="text"> <?= lang('Cheque Report'); ?></span>
                                         </a>
                                     </li>
                                     <li id="reports_staff_report">

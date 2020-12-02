@@ -1952,6 +1952,161 @@ $si = "( SELECT sale_id, product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->
         $this->page_construct('reports/suppliers', $meta, $this->data);
     }
 
+    function profit_based(){
+        $this->data['Settings'] = $this->Settings;
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('reports'), 'page' => lang('reports')), array('link' => '#', 'page' => lang('Product Profit Report')));
+        $meta = array('page_title' => lang('Product Profit Report'), 'bc' => $bc);
+        $from = $this->input->get('from');
+        $to = $this->input->get('to');
+        $based_on = $this->input->get('based_on');
+        if($from !== null && $to !== null){
+            $customers = [];
+            $sales = $this->db->select('id,customer_id, customer, date, reference_no, paid , grand_total, (grand_total - paid) as balance');
+            $sales = $sales->where('sales.date >=', $from)->where('sales.date <=', $to);
+            $sales = $sales->get('sales')->result();
+  
+            foreach($sales as $sale){
+                $sale_items = $this->db->select('sale_items.unit_price, sale_items.quantity, sale_items.product_name, sale_items.product_code, sale_items.subtotal, products.last_highest_cost, products.last_lowest_cost')->where('sale_id', $sale->id)->join('products', 'sale_items.product_id = products.id');
+                $sale_items = $sale_items->get('sale_items')->result();
+                foreach($sale_items as $item){
+                    $item->reference_no = $sale->reference_no;
+                    $item->date = $this->sma->dateTime($sale->date, 'Y-m-d');
+                    $item->profit = ($item->unit_price - $item->{$based_on} ) * $item->quantity;
+                }
+                $customers[$sale->customer_id]['info'] = $sale;
+                $customers[$sale->customer_id]['items'] = $sale_items;
+             
+            }
+            $this->data['based_on'] = $based_on;
+            $this->data['based_on_name'] = $based_on == 'last_lowest_cost' ? 'Last Lowest' : 'Last Highest';
+            $this->data['customers'] = $customers;
+            $this->data['from'] = $from;
+            $this->data['to'] = $to;
+            if($this->input->get('submit') == 'pdf'){
+                $html = $this->load->view($this->theme . 'reports/product_profit_pdf', $this->data, true);
+                return $this->sma->generate_pdf($html, 'Profit based on '. $this->data['based_on_name'] . ' - '. date('Y-m-d') . '.pdf', false, null, null ,null ,null , 'L');
+            }
+        }
+
+        $this->page_construct('reports/product_profit', $meta, $this->data);
+    }
+
+    public function price_list(){
+        $this->sma->checkPermissions();
+        $this->data['Settings'] = $this->Settings;
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => '#', 'page' => lang('Product Price List Report')));
+        $meta = array('page_title' => lang('Product Price List Report'), 'bc' => $bc);
+
+        if ($this->input->server('REQUEST_METHOD') === 'GET') {
+            $this->data['error'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('error');
+            $this->data['categories'] = $this->db->get('categories')->result();
+
+            $from = $this->input->get('from');
+            $to = $this->input->get('to');
+            $category_id =$this->input->get('category_id');
+            if($from !== null && $to !== null &&  $category_id !== null){
+                $products = $this->db->select('code,products.id,cost,price,name');
+                // $products = $this->db->select('*');
+
+                $from_formatted = $this->sma->dateTime($from);
+                $to_formatted = $this->sma->dateTime($to);
+
+                if($category_id == "all"){
+                    $products = $products->get('products');
+                }else{
+                    $products = $products->where('category_id', $category_id)->get('products');
+                }
+                $products = $products->result();
+
+                foreach($products as $product){
+                    //sales
+                    $sales = $this->db->select('max(sma_sale_items.unit_price) as last_highest_price, min(sma_sale_items.unit_price) as last_lowest_price');
+                    $sales = $sales->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
+                    $sales = $sales->join('sale_items', 'sale_items.sale_id = sales.id');
+                    $sales = $sales->where('sale_items.product_id', $product->id);
+                    $sales = $sales->get('sales')->row();
+
+                    $recent_sale = $this->db->select('unit_price as recent_price')->join('sale_items', 'sale_items.sale_id = sales.id');
+                    $recent_sale = $recent_sale->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
+                    $recent_sale = $recent_sale->where('sale_items.product_id', $product->id)->order_by('sales.id', 'desc')->limit(1);
+                    $recent_sale = $recent_sale->get('sales')->row();
+                    
+                    $product->recent_price = $recent_sale->recent_price;
+                    $product->last_highest_price = $sales->last_highest_price;
+                    $product->last_lowest_price = $sales->last_lowest_price;
+                }
+                $this->data['products'] = $products;
+                $this->data['from'] = $from;
+                $this->data['to'] = $to;
+                if($this->input->get('submit') == 'pdf'){
+                    $html = $this->load->view($this->theme . 'reports/price_list_pdf', $this->data, true);
+                    return $this->sma->generate_pdf($html, 'Price List - '. date('Y-m-d') . '.pdf', false, null, null ,null ,null , 'L');
+                }
+            }
+            $this->page_construct('reports/price_list', $meta, $this->data);
+        }
+    }
+
+    function cheque(){
+        $this->data['Settings'] = $this->Settings;
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('reports'), 'page' => lang('reports')), array('link' => '#', 'page' => lang('Cheque Report')));
+        $meta = array('page_title' => lang('Cheque Report'), 'bc' => $bc);
+        $from = $this->input->get('from');
+        $to = $this->input->get('to');
+        $type = $this->input->get('type');
+        $is_deposited = $this->input->get('is_deposited');
+        if($from !== null && $to !== null){
+
+            $cheques = $this->db->select('*');
+            if($type != "All"){
+                $cheques = $cheques->where('type', $type);
+            }
+            if($is_deposited != "All"){
+                $cheques = $cheques->where('is_deposited', $is_deposited);
+            }
+            $cheques = $cheques->where('cheque.created_at >=', $from)->where('cheque.created_at <=', $to);
+            $cheques = $cheques->get('cheque')->result();
+            $this->data['cheques'] = $cheques;
+            $this->data['from'] = $from;
+            $this->data['to'] = $to;
+            $this->data['type'] = $type == "All" ? "All" : $type == "1" ? 'Customer' : 'Supplier';
+            $this->data['is_deposited'] = $is_deposited == "1" ? 'Yes' : 'No';
+            if($this->input->get('submit') == 'pdf'){
+                $html = $this->load->view($this->theme . 'reports/cheque_pdf', $this->data, true);
+                return $this->sma->generate_pdf($html, 'Cheque Report - '. date('Y-m-d') . '.pdf', false, null, null ,null ,null , 'L');
+            }
+        }
+
+        $this->page_construct('reports/cheque', $meta, $this->data);
+    }
+
+    function suppliers_transactions(){
+        $this->data['Settings'] = $this->Settings;
+
+        $bc = array(array('link' => base_url(), 'page' => lang('home')), array('link' => admin_url('reports'), 'page' => lang('reports')), array('link' => '#', 'page' => lang('Supplier Transacitons')));
+        $meta = array('page_title' => lang('Supplier Transacitons'), 'bc' => $bc);
+        $from = $this->input->get('from');
+        $to = $this->input->get('to');
+        if($from !== null && $to !== null){
+            $suppliers = $this->db->select('companies.id,company, sum(sma_purchases.total) as total, sum(sma_purchases.paid) as paid, (sum(sma_purchases.total) - sum(sma_purchases.paid)) as balance')->where('group_id', 4);
+            $suppliers = $suppliers->join('purchases', 'purchases.supplier_id = companies.id')->group_by('companies.id');
+            $suppliers = $suppliers->where('purchases.date >=', $from)->where('purchases.date <=', $to);
+            $suppliers = $suppliers->get('companies')->result();
+            $this->data['suppliers'] = $suppliers;
+            $this->data['from'] = $from;
+            $this->data['to'] = $to;
+            if($this->input->get('submit') == 'pdf'){
+                $html = $this->load->view($this->theme . 'reports/supplier_transactions_pdf', $this->data, true);
+                return $this->sma->generate_pdf($html, 'Supplier Transactions - '. date('Y-m-d') . '.pdf', false);
+            }
+        }
+
+        $this->page_construct('reports/supplier_transactions', $meta, $this->data);
+        
+    }
     function getSuppliers($pdf = NULL, $xls = NULL)
     {
         $this->sma->checkPermissions('suppliers', TRUE);

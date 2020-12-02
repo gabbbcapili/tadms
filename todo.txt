@@ -1,0 +1,13 @@
+habolin ko na lang ung 6 reports na sinasabi ko na need:
+
+1. supplier transactions -> supplier transactions ok
+2. check payment to supplier ok cheque report
+3. list of undeposited cheque ok cheque report
+4. sales report based on highest/lowest cost per date Product Profit Report ok
+5th report na gusto ko sana is inventory -> reports -> products ok
+6th report price list based from a time frame  ok
+3columns lowest, highest, most recent ok
+
+1-4 and 6 myrn sa old system.
+
+ung 5 lang dagdag
