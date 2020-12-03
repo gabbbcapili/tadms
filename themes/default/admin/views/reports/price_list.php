@@ -52,9 +52,9 @@
                             <th>Name</th>
                             <th>Current Cost</th>
                             <th>Current Price</th>
-                            <th>Last Highest Price</th>
-                            <th>Last Lowest Price</th>
-                            <th>Recent Price</th>
+                            <th>Last Highest Cost</th>
+                            <th>Last Lowest Cost</th>
+                            <!-- <th>Recent Price</th> -->
                         </tr>
                         </thead>
                         <tbody>
@@ -66,9 +66,9 @@
                                         <td><?= $product->name ?></td>
                                         <td><?= $product->cost ?></td>
                                         <td><?= $product->price ?></td>
-                                        <td><?= $product->last_highest_price ? $product->last_highest_price : $product->price  ?></td>
-                                        <td><?= $product->last_lowest_price ? $product->last_lowest_price : $product->price  ?></td>
-                                        <td><?= $product->recent_price ? $product->recent_price : $product->price  ?></td>
+                                        <td><?= $product->last_highest_cost ? $product->last_highest_cost : $product->cost  ?></td>
+                                        <td><?= $product->last_lowest_cost ? $product->last_lowest_cost : $product->cost  ?></td>
+                                        <!-- <td><?= $product->recent_price ? $product->recent_price : $product->price  ?></td> -->
                                     </tr>
                                 <?php }
                              ?>

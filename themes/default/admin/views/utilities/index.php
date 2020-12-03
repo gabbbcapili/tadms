@@ -34,6 +34,28 @@
         </div><br>
         <div class="row">
             <div class="col-md-4">
+                <div class="form-group">
+                        <label>Paste Cost with</label>
+                        <select class="form-control" name="cost" required>
+                            <option value ="current" <?= $this->input->get('cost') == 'current' ? 'selected' : '' ?>>Current Cost (default)</option>
+                            <option value="last_highest_cost" <?= $this->input->get('cost') == 'last_highest_cost' ? 'selected' : '' ?>>Last Highest Cost</option>
+                            <option value="last_lowest_cost" <?= $this->input->get('cost') == 'last_lowest_cost' ? 'selected' : '' ?>>Last Lowest Cost</option>
+                        </select>
+                 </div>
+             </div>
+             <div class="col-md-4">
+                 <div class="form-group">
+                        <label>Paste Price with</label>
+                        <select class="form-control" name="price" required>
+                            <option value ="current" <?= $this->input->get('price') == 'current' ? 'selected' : '' ?>>Current Price (default)</option>
+                            <option value="last_highest_price" <?= $this->input->get('price') == 'last_highest_price' ? 'selected' : '' ?>>Last Highest Price</option>
+                            <option value="last_lowest_price" <?= $this->input->get('price') == 'last_lowest_price' ? 'selected' : '' ?>>Last Lowest Price</option>
+                        </select>
+                 </div>
+             </div>
+        </div><br>
+        <div class="row">
+            <div class="col-md-4">
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
@@ -73,10 +95,10 @@
                                         <td><div class="text-center"><input class="checkbox multi-select" type="checkbox" name="product[<?= $product->id ?>][checkbox]"></div></td>
                                         <td><?= $product->code ?></td>
                                         <td><?= $product->name ?></td>
-                                        <td><input class="form-control" type="number" name="product[<?= $product->id ?>][cost]" value="<?= $product->cost ?>"></td>
+                                        <td><input class="form-control" type="number" name="product[<?= $product->id ?>][cost]" value="<?= $this->input->get('cost') == 'current' ? $product->cost : $product->{$this->input->get('cost')} ?>"></td>
                                         <td><?= $product->last_highest_cost ? $product->last_highest_cost : $product->cost  ?></td>
                                         <td><?= $product->last_lowest_cost ? $product->last_lowest_cost : $product->cost  ?></td>
-                                        <td><input class="form-control" type="number" name="product[<?= $product->id ?>][price]" value="<?= $product->price ?>"></td>
+                                        <td><input class="form-control" type="number" name="product[<?= $product->id ?>][price]" value="<?= $this->input->get('price') == 'current' ? $product->price : $product->{$this->input->get('price')} ?>"></td>
                                         <td><?= $product->last_highest_price ? $product->last_highest_price : $product->price  ?></td>
                                         <td><?= $product->last_lowest_price ? $product->last_lowest_price : $product->price  ?></td>
                                     </tr>

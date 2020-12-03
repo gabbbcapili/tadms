@@ -46,6 +46,18 @@ class Cheque extends MY_Controller
         $this->page_construct('cheque/index', $meta, $this->data);
     }
 
+    function update_all(){
+        $cheq = $this->db->get('cheque')->result();
+        foreach($cheq as $cheque){
+
+            $data = [
+                'deposit_date' =>  date('Y-m-d', strtotime(str_replace('/', '-', $cheque->deposit_date))),
+                'transaction_date' =>  date('Y-m-d', strtotime(str_replace('/', '-', $cheque->transaction_date)))
+            ];
+            $this->db->where('id', $cheque->id)->update('cheque', $data);
+        }
+    }
+
     public function getCheque($warehouse_id = null)
     {
         $this->sma->checkPermissions('index');
@@ -82,12 +94,15 @@ class Cheque extends MY_Controller
         $this->sma->checkPermissions();
         $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
         $this->form_validation->set_rules('amount', lang("amount"), 'required');
+        $this->form_validation->set_rules('cheque_code', lang("Cheque Code"), 'is_unique[cheque.cheque_code]');
+
+        // is_unique[users.user_name]
 
         if ($this->form_validation->run() == true) {
             $data = [
             	'type' =>  $this->input->post('type'),
-            	'deposit_date' => $this->input->post('deposit_date'),
-            	'transaction_date' =>  $this->input->post('transaction_date'),
+            	'deposit_date' => $this->sma->dateTime($this->input->post('deposit_date'), 'Y-m-d'),
+            	'transaction_date' =>  $this->sma->dateTime($this->input->post('transaction_date'), 'Y-m-d'),
             	'amount' =>  $this->input->post('amount'),
             	'cheque_code' =>  $this->input->post('cheque_code'),
             	'cheque_number' => $this->input->post('cheque_number'),
@@ -133,8 +148,8 @@ class Cheque extends MY_Controller
         if ($this->form_validation->run() == true) {
             $data = [
             	'type' =>  $this->input->post('type'),
-            	'deposit_date' =>  $this->input->post('deposit_date'),
-            	'transaction_date' =>  $this->input->post('transaction_date'),
+            	'deposit_date' => $this->sma->dateTime($this->input->post('deposit_date'), 'Y-m-d'),
+                'transaction_date' =>  $this->sma->dateTime($this->input->post('transaction_date'), 'Y-m-d'),
             	'amount' =>  $this->input->post('amount'),
             	'cheque_code' =>  $this->input->post('cheque_code'),
             	'cheque_number' => $this->input->post('cheque_number'),

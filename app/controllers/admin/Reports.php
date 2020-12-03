@@ -2022,20 +2022,28 @@ $si = "( SELECT sale_id, product_id, serial_no, GROUP_CONCAT(CONCAT({$this->db->
 
                 foreach($products as $product){
                     //sales
-                    $sales = $this->db->select('max(sma_sale_items.unit_price) as last_highest_price, min(sma_sale_items.unit_price) as last_lowest_price');
-                    $sales = $sales->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
-                    $sales = $sales->join('sale_items', 'sale_items.sale_id = sales.id');
-                    $sales = $sales->where('sale_items.product_id', $product->id);
-                    $sales = $sales->get('sales')->row();
+                    // $sales = $this->db->select('max(sma_sale_items.unit_price) as last_highest_price, min(sma_sale_items.unit_price) as last_lowest_price');
+                    // $sales = $sales->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
+                    // $sales = $sales->join('sale_items', 'sale_items.sale_id = sales.id');
+                    // $sales = $sales->where('sale_items.product_id', $product->id);
+                    // $sales = $sales->get('sales')->row();
 
-                    $recent_sale = $this->db->select('unit_price as recent_price')->join('sale_items', 'sale_items.sale_id = sales.id');
-                    $recent_sale = $recent_sale->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
-                    $recent_sale = $recent_sale->where('sale_items.product_id', $product->id)->order_by('sales.id', 'desc')->limit(1);
-                    $recent_sale = $recent_sale->get('sales')->row();
+                    // $recent_sale = $this->db->select('unit_price as recent_price')->join('sale_items', 'sale_items.sale_id = sales.id');
+                    // $recent_sale = $recent_sale->where('sales.date >=', $from_formatted)->where('sales.date <=', $to_formatted);
+                    // $recent_sale = $recent_sale->where('sale_items.product_id', $product->id)->order_by('sales.id', 'desc')->limit(1);
+                    // $recent_sale = $recent_sale->get('sales')->row();
                     
-                    $product->recent_price = $recent_sale->recent_price;
-                    $product->last_highest_price = $sales->last_highest_price;
-                    $product->last_lowest_price = $sales->last_lowest_price;
+                    // $product->recent_price = $recent_sale->recent_price;
+                    // $product->last_highest_price = $sales->last_highest_price;
+                    // $product->last_lowest_price = $sales->last_lowest_price;
+
+                    $purchases = $this->db->select('max(sma_purchase_items.unit_cost) as last_highest_cost, min(sma_purchase_items.unit_cost) as last_lowest_cost');
+                    $purchases = $purchases->where('purchases.date >=', $from_formatted)->where('purchases.date <=', $to_formatted);
+                    $purchases = $purchases->join('purchase_items', 'purchase_items.purchase_id = purchases.id');
+                    $purchases = $purchases->where('purchase_items.product_id', $product->id);
+                    $purchases = $purchases->get('purchases')->row();
+                    $product->last_highest_cost = $purchases->last_highest_cost;
+                    $product->last_lowest_cost = $purchases->last_lowest_cost;
                 }
                 $this->data['products'] = $products;
                 $this->data['from'] = $from;
