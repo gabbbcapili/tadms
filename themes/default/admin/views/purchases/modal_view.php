@@ -142,7 +142,8 @@
                             <?php if ($Settings->indian_gst) { ?>
                             <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code; ?></td>
                             <?php } ?>
-                            <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $this->sma->formatQuantity($row->unit_quantity).' '.$row->product_unit_code; ?></td>
+                            <td style="width: 80px; text-align:center; vertical-align:middle;">
+                                <?php if(is_numeric( $row->unit_quantity ) && floor( $row->unit_quantity ) != $row->unit_quantity){ echo $this->sma->formatQuantity($row->unit_quantity); }else{ echo number_format($row->unit_quantity, 0); } ?> <?= $row->product_unit_code; ?> </td>
                             <?php
                             if ($inv->status == 'partial') {
                                 echo '<td style="text-align:center;vertical-align:middle;width:80px;">'.$this->sma->formatQuantity($row->quantity_received).' '.$row->product_unit_code.'</td>';

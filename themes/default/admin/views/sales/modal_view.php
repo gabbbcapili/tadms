@@ -11,11 +11,17 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                 <i class="fa fa-2x">&times;</i>
             </button>
-            <button type="button" class="btn btn-xs btn-default no-print pull-right" style="margin-right:15px;" onclick="window.print();">
-                <i class="fa fa-print"></i> <?= lang('print'); ?>
+            <button type="button" class="btn btn-xs btn-default no-print pull-right print_type" id="customer_copy" style="margin-right:15px;" data-text="Customer Copy">
+                <i class="fa fa-print"></i> <?= lang('Customer Copy'); ?>
+            </button>
+            <button type="button" class="btn btn-xs btn-default no-print pull-right print_type" id="accounting_copy" style="margin-right:15px;" data-text="Accounting Copy">
+                <i class="fa fa-print"></i> <?= lang('Accounting Copy'); ?>
+            </button>
+            <button type="button" class="btn btn-xs btn-default no-print pull-right print_type" id="original_copy" style="margin-right:15px;" data-text="Original Copy">
+                <i class="fa fa-print"></i> <?= lang('Original Copy'); ?>
             </button>
             <?php if ($logo) { ?>
-                <div class="text-center" style="margin-bottom:10px;">
+                <div class="text-center" style="margin-bottom:30px;">
                     <img src="<?= base_url() . 'assets/uploads/logos/' . $biller->logo; ?>"
                          alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>">
                 </div>
@@ -56,7 +62,8 @@
                     <?= $customer->company && $customer->company != '-' ? "" : "Attn: " . $customer->name ?>
 
                     <?php
-                    echo $customer->address . " " . $csutomer->city . " " . $customer->postal_code . " " . $customer->state . " " . $customer->country;
+                    echo $customer->address . " " . $customer->city . " " . $customer->postal_code . " " . $customer->state . " " . $customer->country . '<br>';
+                    echo '<h2 class="copy_type">Original Copy </h2>';
 
                     echo "<p>";
 
@@ -185,7 +192,8 @@
                             <?php if ($Settings->indian_gst) { ?>
                             <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $row->hsn_code; ?></td>
                             <?php } ?>
-                            <td style="width: 80px; text-align:center; vertical-align:middle;"><?= $this->sma->formatQuantity($row->unit_quantity).' '.$row->product_unit_code; ?></td>
+                            <td style="width: 80px; text-align:center; vertical-align:middle;"><?php if(is_numeric( $row->unit_quantity ) && floor( $row->unit_quantity ) != $row->unit_quantity){ echo $this->sma->formatQuantity($row->unit_quantity); }else{ echo number_format($row->unit_quantity, 0); } ?> 
+                            <?= $row->product_unit_code; ?></td>
                             <td style="text-align:right; width:100px;"><?= $this->sma->formatMoney($row->unit_price); ?></td>
                             <?php
                             if ($Settings->tax1 && $inv->product_tax > 0) {
@@ -459,5 +467,17 @@
 <script type="text/javascript">
     $(document).ready( function() {
         $('.tip').tooltip();
+        $(document).on('click', '#customer_copy', function(){
+            $('.copy_type').html($(this).data('text'));
+            window.print();
+        });
+        $(document).on('click', '#accounting_copy', function(){
+            $('.copy_type').html($(this).data('text'));
+            window.print();
+        });
+        $(document).on('click', '#original_copy', function(){
+            $('.copy_type').html($(this).data('text'));
+            window.print();
+        });
     });
 </script>

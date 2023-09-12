@@ -19,45 +19,36 @@
 <div class="modal-dialog modal-lg no-modal-header">
     <div class="modal-content">
         <div class="modal-body">
-
             <?php if ($Settings->logo2) {
                 $path = base_url() . 'assets/uploads/logos/' . $Settings->logo2;
                 $image_type = pathinfo($path, PATHINFO_EXTENSION);
                 $data = file_get_contents($path);
                 $base64 = 'data:image/' . $image_type . ';base64,' . base64_encode($data);
                 ?>
-                <div class="text-center" style="margin-bottom:20px;">
+                <div style="display:inline-block; width:40%;">
                     <img src="<?= $base64; ?>">
                 </div>
             <?php } ?>
-            <div class="well well-sm">
-                <div class="row bold">
-                    <div class="col-xs-7">
+              <div style="display:inline-block; width:24%;">
                     <p class="bold">
                         <?= lang("Print Date"); ?>: <?= date('Y-m-d H:i:s'); ?><br>
                         <?= lang("Report"); ?>: Cheque Report<br>
                     </p>
-                    </div>
-                    <div class="col-xs-5">
-                    <p class="bold">Report Based From:<br>
-                        <?= $from . ' - ' . $to ?><br>
-                        Type: <?= $type ?><br>
-                        Deposited?: <?= $is_deposited ?><br>
+              </div>
+              <div style="display:inline-block; width:33%;">
+                    <p class="bold">
+                      Report Based From: <?= $from . ' - ' . $to ?><br>
+                      Type: <?= $type ?><br>
+                      Deposited?: <?= $is_deposited ?>
                     </p>
-                     
-                    </div>
                 </div>
-            </div>
-
-            <div class="row" style="margin-bottom:15px;">
-            </div>
-
             <div class="table-responsive">
                 <table class="table table-bordered table-hover print-table order-table">
                     <thead>
                         <tr>
                             <th>Type</th>
                             <th>TR Date</th>
+                            <th>Cheque #</th>
                             <th>Deposit Date</th>
                             <th>Amount</th>
                             <th>Bank Name</th>
@@ -78,6 +69,7 @@
                                     <tr>
                                         <td><?= $cheque->type == 1 ? 'Customer' : 'Supplier' ?></td>
                                         <td><?= $cheque->transaction_date ?></td>
+                                        <td><?= $cheque->cheque_number ?></td>
                                         <td><?= $cheque->deposit_date ?></td>
                                         <td><?= number_format($cheque->amount, 2) ?></td>
                                         <td><?= $cheque->bank_name ?></td>
