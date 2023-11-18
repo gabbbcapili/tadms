@@ -30,7 +30,7 @@
     <div class="page-back">
         <div class="text-center">
             <?php if ($Settings->logo2) {
-                echo '<img src="' . base_url('assets/uploads/logos/' . $Settings->logo2) . '" alt="' . $Settings->site_name . '" style="margin-bottom:10px;" />';
+                echo '<img src="' . base_url('assets/uploads/logos/' . $Settings->logo2) . '" alt="' . $Settings->site_name . '" style="margin-bottom:10px; max-height:120px; max-width:300px;" />';
             } ?>
         </div>
 

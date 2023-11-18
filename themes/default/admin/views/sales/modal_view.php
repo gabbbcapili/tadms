@@ -22,8 +22,8 @@
             </button>
             <?php if ($logo) { ?>
                 <div class="text-center" style="margin-bottom:30px;">
-                    <img src="<?= base_url() . 'assets/uploads/logos/' . $biller->logo; ?>"
-                         alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>">
+                    <img src="<?= base_url() . 'assets/uploads/logos/' . $logo; ?>"
+                         alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>" style="max-height:120px;max-width: 300px;">
                 </div>
             <?php } ?>
             <div class="well well-sm">
@@ -346,7 +346,7 @@
                 <div class="col-xs-6">
                  
                             <div class="well well-sm">
-                                <div> <b>Note:</b> Sales invoice will be issued immediately upon completion of delivery <b>Please make check payable to Tiger and Dragon Marketing</b></div>
+                                <div><?= $biller->invoice_footer ?></div>
                             </div>
                 
                 </div>
