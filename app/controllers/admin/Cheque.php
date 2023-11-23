@@ -100,19 +100,19 @@ class Cheque extends MY_Controller
 
         if ($this->form_validation->run() == true) {
             $data = [
-            	'type' =>  $this->input->post('type'),
-            	'deposit_date' => $this->sma->dateTime($this->input->post('deposit_date'), 'Y-m-d'),
-            	'transaction_date' =>  $this->sma->dateTime($this->input->post('transaction_date'), 'Y-m-d'),
-            	'amount' =>  $this->input->post('amount'),
-            	'cheque_code' =>  $this->input->post('cheque_code'),
-            	'cheque_number' => $this->input->post('cheque_number'),
-            	'bank_name' =>  $this->input->post('bank_name'),
-            	'account_name' =>  $this->input->post('account_name'),
-            	'account_name' => $this->input->post('account_name'),
-            	'account_number' =>  $this->input->post('account_number'),
-            	'is_deposited' =>  $this->input->post('is_deposited'),
-            	'created_by' =>  $this->session->userdata('user_id'),
-            	'created_at' =>  date('Y-m-d H:i:s'),
+                'type' =>  $this->input->post('type'),
+                'deposit_date' => $this->formatDate($this->input->post('deposit_date'), 'Y-m-d'),
+                'transaction_date' =>  $this->formatDate($this->input->post('transaction_date'), 'Y-m-d'),
+                'amount' =>  $this->input->post('amount'),
+                'cheque_code' =>  $this->input->post('cheque_code'),
+                'cheque_number' => $this->input->post('cheque_number'),
+                'bank_name' =>  $this->input->post('bank_name'),
+                'account_name' =>  $this->input->post('account_name'),
+                'account_name' => $this->input->post('account_name'),
+                'account_number' =>  $this->input->post('account_number'),
+                'is_deposited' =>  $this->input->post('is_deposited'),
+                'created_by' =>  $this->session->userdata('user_id'),
+                'created_at' =>  date('Y-m-d H:i:s'),
             ];
 
         }
@@ -127,6 +127,12 @@ class Cheque extends MY_Controller
         }
     }
 
+    public function formatDate($inputDate, $format){
+        // die($inputDate);
+        $date = date_create_from_format("d/m/Y", $inputDate);
+        return date_format($date, $format);
+    }
+
     public function edit($id = null)
     {
         $this->sma->checkPermissions();
@@ -137,28 +143,29 @@ class Cheque extends MY_Controller
 
         // die(var_dump($inv));
         $this->form_validation->set_message('is_natural_no_zero', lang("no_zero_required"));
-		$this->form_validation->set_rules('amount', lang("amount"), 'required');
+        $this->form_validation->set_rules('amount', lang("amount"), 'required');
 
 
         if ($this->form_validation->run() == true) {
-       
+
             // $this->sma->print_arrays($data, $products);
         }
 
         if ($this->form_validation->run() == true) {
+            // die($this->formatDate($this->input->post('transaction_date'), 'Y-m-d'));
             $data = [
-            	'type' =>  $this->input->post('type'),
-            	'deposit_date' => $this->sma->dateTime($this->input->post('deposit_date'), 'Y-m-d'),
-                'transaction_date' =>  $this->sma->dateTime($this->input->post('transaction_date'), 'Y-m-d'),
-            	'amount' =>  $this->input->post('amount'),
-            	'cheque_code' =>  $this->input->post('cheque_code'),
-            	'cheque_number' => $this->input->post('cheque_number'),
-            	'bank_name' =>  $this->input->post('bank_name'),
-            	'account_name' =>  $this->input->post('account_name'),
-            	'account_name' => $this->input->post('account_name'),
-            	'account_number' =>  $this->input->post('account_number'),
-            	'is_deposited' =>  $this->input->post('is_deposited'),
-            	'created_by' =>  $this->session->userdata('user_id'),
+                'type' =>  $this->input->post('type'),
+                'deposit_date' => $this->formatDate($this->input->post('deposit_date'), 'Y-m-d'),
+                'transaction_date' =>  $this->formatDate($this->input->post('transaction_date'), 'Y-m-d'),
+                'amount' =>  $this->input->post('amount'),
+                'cheque_code' =>  $this->input->post('cheque_code'),
+                'cheque_number' => $this->input->post('cheque_number'),
+                'bank_name' =>  $this->input->post('bank_name'),
+                'account_name' =>  $this->input->post('account_name'),
+                'account_name' => $this->input->post('account_name'),
+                'account_number' =>  $this->input->post('account_number'),
+                'is_deposited' =>  $this->input->post('is_deposited'),
+                'created_by' =>  $this->session->userdata('user_id'),
             ];
         }
         if ($this->form_validation->run() == true && $this->Cheque_model->updateCheque($id, $data)) {

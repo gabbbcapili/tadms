@@ -28,7 +28,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <?= lang("Deposit Date", "deposit_date"); ?>
-                                    <?php echo form_input('deposit_date', $this->sma->dateTime($inv->deposit_date, 'm/d/Y'), 'class="form-control input-tip date" id="deposit_date" required="required"'); ?>
+                                    <?php echo form_input('deposit_date', $this->sma->dateTime($inv->deposit_date, 'd/m/Y'), 'class="form-control input-tip date" id="deposit_date" required="required"'); ?>
                                 </div>
                             </div>
 
@@ -36,7 +36,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <?= lang("Transaction Date", "transaction_date"); ?>
-                                    <?php echo form_input('transaction_date', $this->sma->dateTime($inv->transaction_date, 'm/d/Y'), 'class="form-control input-tip date" id="transaction_date" required="required"'); ?>
+                                    <?php echo form_input('transaction_date', $this->sma->dateTime($inv->transaction_date, 'd/m/Y'), 'class="form-control input-tip date" id="transaction_date" required="required"'); ?>
                                 </div>
                             </div>
 
