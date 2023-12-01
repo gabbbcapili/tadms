@@ -22,7 +22,7 @@
             </button>
             <?php if ($logo) { ?>
                 <div class="text-center" style="margin-bottom:30px;">
-                    <img src="<?= base_url() . 'assets/uploads/logos/' . $logo; ?>"
+                    <img src="<?= base_url() . 'assets/uploads/logos/' . $biller->logo; ?>"
                          alt="<?= $biller->company != '-' ? $biller->company : $biller->name; ?>" style="max-height:120px;max-width: 300px;">
                 </div>
             <?php } ?>
